@@ -2,7 +2,6 @@
 
 ## Requisitos
 
-- Conexión a internet 
 - [Actas del Escrutinio - Presidenciales](http://www.tse.go.cr/elecciones2018/actas_escrutinio.htm)
 - [Golang](https://golang.org/doc/install) 1.10+
 
