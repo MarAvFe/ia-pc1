@@ -14,8 +14,7 @@ def leercsv(nombreArchivo, nombreMatriz):
     archivo.close()
 
 
-leercsv("actas.csv", matrizActas)
-leercsv("indicadores.csv", matrizJrv)
-leercsv("jrv.csv", matrizIndicadores)
+leercsv("../resources/actas.csv", matrizActas)
+leercsv("../resources/indicadores.csv", matrizJrv)
+leercsv("../resources/jrv.csv", matrizIndicadores)
 
-	

@@ -40,7 +40,7 @@ func parseAct(file *xlsx.File) {
 				}
 			}
 			canton := sheet.Rows[1].Cells[i].String()
-			fmt.Println(canton + ",2000," + str2000)
+			//fmt.Println(canton + ",2000," + str2000)
 			fmt.Println(canton + ",2011," + str2011)
 		}
 	}
