@@ -74,25 +74,25 @@ def esBuenoEstadoDeVivienda(canton):
 				return False
 
 def annosAprobadosEducacionRegular(canton, edad):
-	for fila in matrizIndicadores:
-		cantonCsv = fila[0]
-		annoCsv = fila [1]
-		if (cantonCsv == canton and annoCsv == "2011" ): 
-			if (edad <=49): 
-				return matrizIndicadores[16]
-			else:
-				return matrizIndicadores[17]
+    for fila in matrizIndicadores:
+        cantonCsv = fila[0]
+        annoCsv = fila [1]
+        if (cantonCsv == canton and annoCsv == "2011" ): 
+            if (edad <=49): 
+                return fila[16]
+            else:
+                return fila[17]
 
 
 def porcentajeAsistenciaEducacionRegular(canton, edad):
-	for fila in matrizIndicadores:
-		cantonCsv = fila[0]
-		annoCsv = fila [1]
-		if (cantonCsv == canton and annoCsv == "2011" ): 
-			if (edad<=24):
-				return matrizIndicadores[21]
-			else: 
-				return matrizIndicadores[22]
+    for fila in matrizIndicadores:
+        cantonCsv = fila[0]
+        annoCsv = fila [1]
+        if (cantonCsv == canton and annoCsv == "2011" ): 
+            if (edad<=24):
+                return fila[21]
+            else: 
+                return fila[22]
 
 
 def tieneTrabajo(canton, genero):
