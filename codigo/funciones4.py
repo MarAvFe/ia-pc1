@@ -63,6 +63,7 @@ def obtenerVotante(provincia=""):
     canton = obtenerCantonAleatorio(provincia)
     sexo = esHombre()
     edad = obtenerEdad(canton,sexo)
+    votante.append(obtenerVotoPorPartido(canton))
     votante.append(canton)
     votante.append(sexo)
     votante.append(edad)
@@ -386,7 +387,6 @@ def obtenerVotosPorCanton():
     cantonVotos = []
     indices = obtenerJuntasIndices()
     ultimoCanton = 0
-    cantonVotos.append([indices[ultimoCanton][0]])
     for j, acta in enumerate(matrizActas):
         if j == indices[ultimoCanton][1]:
             cantonVotos.append([indices[ultimoCanton][0],acta[1:-7]])
@@ -404,6 +404,7 @@ def obtenerVotos(canton, lista):
 
 
 def obtenerVotoPorPartido(canton):
+    # Elije aleatoriamente pero con cierta densidad, el voto de un elector
     partidos = [
         "ACCESIBILIDAD SIN EXCLUSION",
         "ACCION CIUDADANA",
@@ -419,16 +420,51 @@ def obtenerVotoPorPartido(canton):
         "RESTAURACION NACIONAL",
         "UNIDAD SOCIAL CRISTIANA"
     ]
+    # Lista de pesos con los votos del cantón por cada partido 
     votosDelCanton = obtenerVotos(canton, obtenerVotosPorCanton())
+    # Total de votos del cantón
     total = sum(int(n) for n in votosDelCanton)
+    # Número aleatorio dentro del total de votos
     seed = uniform(0, total)
     indVoto = -1
     for j, k in enumerate(votosDelCanton):
+        # Sumar los votos y ver si superan el valor aleatorio. 
+        # Una vez que lo superan, se ha alcanzado un step que define el 
+        #  rango en que se determina el voto.
         if seed <= sum(float(n) for n in votosDelCanton[:j]):
             indVoto = j
             break
     voto = partidos[indVoto-1]
     return voto
+
+def contarDiferentes(lista):
+    # Cuenta los valores diferentes de una lista y su
+    #  cantidad de ocurrencias
+    retorno = [[],[]]
+    for e in lista:
+        if e in retorno[0]:
+            k = retorno[0].index(e)
+            retorno[1][k] += 1
+        else:
+            retorno[0].append(e)
+            retorno[1].append(1)
+    return retorno
+
+def analisis(muestra):
+    n = len(muestra)
+    
+    partidos = []
+    for v in muestra:
+        partidos.append(v[0])
+    partidosDiferentes = contarDiferentes(partidos)
+    totalPartidos = len(partidos)
+    porcent = [obtienePorcentaje(x,totalPartidos) for x in partidosDiferentes[1]]
+    print("Cantidad de votantes:" + str(len(partidos)))
+    print("Títulos: " + str(partidosDiferentes[0]))
+    print("Porcentajes: " + str(porcent))
+
+    
+
 
 # Carga de datos
 leerCsv("../resources/actas.csv", matrizActas)
@@ -457,8 +493,6 @@ leerCsv("../resources/tic.csv", matrizTic)
 # print(obtenerCantonAleatorio())
 # print(obtenerCantonAleatorio("CARTAGO"))
 
-print(datetime.now().time())
-obtener_muestra_pais(50)
-print(datetime.now().time())
+analisis(obtener_muestra_pais(70))
 
-print(obtenerVotoPorPartido("MORAVIA"))
+#print(obtenerVotoPorPartido("MORAVIA"))
