@@ -39,11 +39,14 @@ def obtener_muestra_provincia(n, provincia):
 
 def obtenerVotante(provincia=""):
     votante = []
-    votante.append(obtenerCantonAleatorio(provincia))
-    votante.append(esHombre())
-    votante.append(obtenerEdad(canton,esHombre))
+    canton = obtenerCantonAleatorio(provincia)
+    sexo = esHombre()
+    edad = obtenerEdad(canton,sexo)
+    votante.append(canton)
+    votante.append(sexo)
+    votante.append(edad)
     # Todos los indicadores
-    votante.append(obtenerPromedioAlfabetismo(canton))
+    votante.append(obtenerPromedioAlfabetismo(canton,edad))
     votante.append(obtenerPromedioDeOcupantes(canton))
     votante.append(estaAsegurado(canton))
     votante.append(estaDesempleado(canton))
@@ -194,6 +197,8 @@ print(len(obtenerCantonesPoblacion()))
 
 print(obtenerCantonAleatorio())
 print(obtenerCantonAleatorio("CARTAGO"))
+
+print(obtener_muestra_pais(5))
 
 #prueba = []
 #for i in range(5000):
