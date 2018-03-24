@@ -206,9 +206,9 @@ def annosAprobadosEducacionRegular(canton, edad):
         annoCsv = fila [1]
         if (cantonCsv == canton and annoCsv == "2011" ): 
             if (edad <=49): 
-                return matrizIndicadores[16]
+                return fila[16]
             else:
-                return matrizIndicadores[17]
+                return fila[17]
 
 
 def porcentajeAsistenciaEducacionRegular(canton, edad):
@@ -217,9 +217,9 @@ def porcentajeAsistenciaEducacionRegular(canton, edad):
         annoCsv = fila [1]
         if (cantonCsv == canton and annoCsv == "2011" ): 
             if (edad<=24):
-                return matrizIndicadores[21]
+                return fila[21]
             else: 
-                return matrizIndicadores[22]
+                return fila[22]
 
 
 def tieneTrabajo(canton, genero, r=-1):
@@ -292,9 +292,9 @@ def obtienePorcPoblacionUrbana(canton):
     return float(porcentajePoblacionUrb)
     
 
-def viveZonaUrbana(canton):
+def viveZonaUrbana(canton, r=-1):
     densidadPoblacionUrbana = obtienePorcPoblacionUrbana(canton)
-    random = randint(1,100)
+    random = randint(1,100) if r==-1 else r
     return random<densidadPoblacionUrbana
 #funciones #3
 #------obtiene si vive en hacinamiento
@@ -306,9 +306,9 @@ def porcentajeHacinamiento(canton):
             porcentajeHacinamiento = matrizIndicadores[i][11]   
     return float(porcentajeHacinamiento)
 
-def viveHacinamiento(canton):
+def viveHacinamiento(canton, r=-1):
     hacinamientoCanton = porcentajeHacinamiento(canton)
-    random = randint(1,100)
+    random = randint(1,100) if r==-1 else r
     return random<hacinamientoCanton
 
 #funciones #4   
@@ -321,9 +321,9 @@ def porcentajeParticipacionNeta(canton):
             porc_neto = matrizIndicadores[i][24]        
     return float(porc_neto)
 
-def estaDentroParticipacionEconomica(canton):
+def estaDentroParticipacionEconomica(canton, r=-1):
     porc_participacionNeta = porcentajeParticipacionNeta(canton)
-    random = randint(1,100)
+    random = randint(1,100) if r==-1 else r
     return random<porc_participacionNeta
     
     
@@ -337,9 +337,9 @@ def porcentajeDiscapacitados(canton):
             porc_discapacitados = matrizIndicadores[i][30]         
     return float(porc_discapacitados)
 
-def esDiscapacitado(canton):
+def esDiscapacitado(canton, r=-1):
     porc_discapacitados = porcentajeDiscapacitados(canton)
-    random = randint(1,100)
+    random = randint(1,100) if r==-1 else r
     return random<porc_discapacitados
 
 #funciones #5
@@ -352,9 +352,9 @@ def porcHogarJefaturaCompartida(canton):
             porc_jefaturaComp = matrizIndicadores[i][32]
     return float(porc_jefaturaComp)
 
-def viveHogarJefaturaCompartida(canton):
+def viveHogarJefaturaCompartida(canton, r=-1):
     porc_jefaturaComp = porcHogarJefaturaCompartida(canton)
-    random = randint(1,100)
+    random = randint(1,100) if r==-1 else r
     return random<porc_jefaturaComp
 
 
