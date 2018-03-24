@@ -80,14 +80,14 @@ def obtienePorcPoblacionUrbana(canton):
         if (len(matrizIndicadores[i])!= 0 and matrizIndicadores[i][0]==canton and matrizIndicadores[i][1]=="2011"):
             porcentajePoblacionUrb = matrizIndicadores[i][5]
     print("El % de poblacion urbana en el canton es " + porcentajePoblacionUrb)            
-    return float(porcentajePoblacionUrb)
+    return porcentajePoblacionUrb
     
 
 def viveZonaUrbana(canton):
     densidadPoblacionUrbana = obtienePorcPoblacionUrbana(canton)
     random = randint(1,100)
     print(random)
-    if (random<densidadPoblacionUrbana):
+    if (random<float(densidadPoblacionUrbana)):
         return True
     else:
         return False

@@ -26,20 +26,6 @@ provincias = [
     "LIMON"
     ]
 
-# API
-
-def obtener_muestra_pais(n):
-    muestra = []
-    for i in range(n):
-        muestra.append(obtenerVotante())
-    return muestra
-
-
-def obtener_muestra_provincia(n, provincia):
-    muestra = []
-    for i in range(n):
-        muestra.append(obtenerVotante(provincia))
-    return muestra
 
 
 # Auxiliares
@@ -58,20 +44,7 @@ def leerCsv(nombreArchivo, nombreMatriz):
     archivo.close()
 
 
-def obtenerVotante(provincia=""):
-    votante = []
-    canton = obtenerCantonAleatorio(provincia)
-    sexo = esHombre()
-    edad = obtenerEdad(canton,sexo)
-    votante.append(canton)
-    votante.append(sexo)
-    votante.append(edad)
-    # Todos los indicadores
-    votante.append(obtenerPromedioAlfabetismo(canton,edad))
-    votante.append(obtenerPromedioDeOcupantes(canton))
-    votante.append(estaAsegurado(canton))
-    votante.append(estaDesempleado(canton))
-    return votante
+
 
 
 def obtenerVotantesCanton(canton, provincia):
@@ -265,7 +238,7 @@ def provinciaSegunVotante():
     guanacaste =  cantidadVotantesSegunProvincia("GUANACASTE")
     puntarenas = cantidadVotantesSegunProvincia("PUNTARENAS")
     limon = cantidadVotantesSegunProvincia("LIMON")
-    costaRica = sanJose + alajuela + cartago + heredia + guanacaste + puntarenas + limo    
+    costaRica = sanJose + alajuela + cartago + heredia + guanacaste + puntarenas + limon    
     if(random<=32):
         return "San Jose"
     elif(random>32 and random<=51):
@@ -283,33 +256,31 @@ def provinciaSegunVotante():
 
 #funciones #2
 #----- obtiene si votante pertenece a zona urbana o no
-
-def obtienePorcPoblacionUrbana(canton):
-    porcentajePoblacionUrb = ""
-    for i in range(len(matrizIndicadores)):
-        if (len(matrizIndicadores[i])!= 0 and matrizIndicadores[i][0]==canton and matrizIndicadores[i][1]=="2011"):
-            porcentajePoblacionUrb = matrizIndicadores[i][5]        
-    return float(porcentajePoblacionUrb)
     
-
-def viveZonaUrbana(canton, r=-1):
-    densidadPoblacionUrbana = obtienePorcPoblacionUrbana(canton)
-    random = randint(1,100) if r==-1 else r
-    return random<densidadPoblacionUrbana
+def viveZonaUrbana(canton):
+    densidadPoblacionUrbana = ""
+    for i in range(len(matrizIndicadores)):
+        if ((matrizIndicadores[i][0]==canton) and (matrizIndicadores[i][1]=="2011")):
+            densidadPoblacionUrbana = matrizIndicadores[i][5]
+    random = randint(1,100)
+    if random<float(densidadPoblacionUrbana):
+        return True
+    else:
+        return False
+    
 #funciones #3
 #------obtiene si vive en hacinamiento
 
-def porcentajeHacinamiento(canton):
-    porcentajeHacinamiento = ""
-    for i in range(len(matrizIndicadores)):
-        if (len(matrizIndicadores[i])!= 0 and matrizIndicadores[i][0]==canton and matrizIndicadores[i][1]=="2011"):
-            porcentajeHacinamiento = matrizIndicadores[i][11]   
-    return float(porcentajeHacinamiento)
 
 def viveHacinamiento(canton, r=-1):
-    hacinamientoCanton = porcentajeHacinamiento(canton)
-    random = randint(1,100) if r==-1 else r
-    return random<hacinamientoCanton
+    hacinamientoCanton = ""
+    random = randint(1,100)
+    for i in range(len(matrizIndicadores)):
+        if (len(matrizIndicadores[i])!= 0 and matrizIndicadores[i][0]==canton and matrizIndicadores[i][1]=="2011"):
+            hacinamientoCanton = matrizIndicadores[i][11]
+            if random<float(hacinamientoCanton):
+                return True
+    return False
 
 #funciones #4   
 #-------- obtiene si esta dentro de la tasa neta de participacion economica
@@ -358,6 +329,56 @@ def viveHogarJefaturaCompartida(canton, r=-1):
     return random<porc_jefaturaComp
 
 
+
+def obtenerVotante(provincia=""):
+    votante = []
+    canton = obtenerCantonAleatorio(provincia)
+    sexo = esHombre()
+    edad = obtenerEdad(canton,sexo)
+    votante.append(canton)
+    votante.append(sexo)
+    votante.append(edad)
+    # Todos los indicadores
+    #Demograficos
+    votante.append(provinciaSegunVotante())
+    votante.append(getDensidad(canton))
+    #votante.append(viveZonaUrbana(canton))
+    votante.append(esDependiente(canton))
+    #vivienda
+    votante.append(obtenerPromedioDeOcupantes(canton))
+    votante.append(esBuenoEstadoDeVivienda(canton))
+    votante.append(viveHacinamiento(canton))
+    #Educativos
+    votante.append(obtenerPromedioAlfabetismo(canton,edad))
+    votante.append(annosAprobadosEducacionRegular(canton, edad))
+    votante.append(porcentajeAsistenciaEducacionRegular(canton, edad))
+    #Economicos
+    votante.append(estaDesempleado(canton))
+    votante.append(estaDentroParticipacionEconomica(canton))
+    votante.append(estaAsegurado(canton))
+    #Sociales
+    votante.append(esNacidoEnElExtranjero(canton))
+    votante.append(esDiscapacitado(canton))
+    votante.append(viveHogarJefaturaCompartida(canton))
+    return votante
+
+# API ----------
+
+def obtener_muestra_pais(n):
+    muestra = []
+    for i in range(n):
+        muestra.append(obtenerVotante())
+    return muestra
+
+
+def obtener_muestra_provincia(n, provincia):
+    muestra = []
+    for i in range(n):
+        muestra.append(obtenerVotante(provincia))
+    return muestra
+
+
+
 # Carga de datos
 leerCsv("../resources/actas.csv", matrizActas)
 leerCsv("../resources/comparativo.csv", matrizComparativo)
@@ -385,6 +406,23 @@ leerCsv("../resources/tic.csv", matrizTic)
 # print(obtenerCantonAleatorio())
 # print(obtenerCantonAleatorio("CARTAGO"))
 
-print(datetime.now().time())
-obtener_muestra_pais(500)
-print(datetime.now().time())
+#print(datetime.now().time())
+#obtener_muestra_pais(500)
+#print(datetime.now().time())
+
+
+muestra = obtener_muestra_provincia(5,"CARTAGO")
+for i in range(len(muestra)):
+    print("Votante #"+str(i)+"----------")
+    for j in range(len(muestra[i])):
+        print (muestra[i][j])
+
+muestra_pais = obtener_muestra_pais(5)
+for i in range(len(muestra_pais)):
+    print("Votante Pais#"+str(i)+"----------")
+    for j in range(len(muestra_pais[i])):
+        print (muestra_pais[i][j])
+
+
+
+        
