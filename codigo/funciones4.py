@@ -44,7 +44,25 @@ def leerCsv(nombreArchivo, nombreMatriz):
     archivo.close()
 
 
+#<<<<<<< HEAD
 
+#=======
+def obtenerVotante(provincia=""):
+    votante = []
+    canton = obtenerCantonAleatorio(provincia)
+    sexo = esHombre()
+    edad = obtenerEdad(canton,sexo)
+    votante.append(obtenerVotoPorPartido(canton))
+    votante.append(canton)
+    votante.append(sexo)
+    votante.append(edad)
+    # Todos los indicadores
+    votante.append(obtenerPromedioAlfabetismo(canton,edad))
+    votante.append(obtenerPromedioDeOcupantes(canton))
+    votante.append(estaAsegurado(canton))
+    votante.append(estaDesempleado(canton))
+    return votante
+#>>>>>>> 075111bb8cb05ba45137e574b794e52f0b29becf
 
 
 def obtenerVotantesCanton(canton, provincia):
@@ -101,7 +119,7 @@ def obtenerEdad(canton, esHombre):  # 6-19
             ageSeed = uniform(0, total)
             ageIndex = -1
             for j, k in enumerate(rangos):
-                if ageSeed < sum(float(n) for n in rangos[:j]):
+                if ageSeed <= sum(float(n) for n in rangos[:j]):
                     ageIndex = j
                     break
             age = ages[ageIndex]
@@ -133,7 +151,7 @@ def obtenerCantonAleatorio(provincia=""):
     cantonSeed = uniform(0,total)
     cantonIndex = -1
     for j, k in enumerate(cantonesPoblacion):
-        if cantonSeed < sum(float(n[1]) for n in cantonesPoblacion[:j]):
+        if cantonSeed <= sum(float(n[1]) for n in cantonesPoblacion[:j]):
             cantonIndex = j
             break
     canton = cantonesPoblacion[cantonIndex][0]
@@ -329,6 +347,7 @@ def viveHogarJefaturaCompartida(canton, r=-1):
     return random<porc_jefaturaComp
 
 
+#<<<<<<< HEAD
 
 def obtenerVotante(provincia=""):
     votante = []
@@ -377,6 +396,113 @@ def obtener_muestra_provincia(n, provincia):
         muestra.append(obtenerVotante(provincia))
     return muestra
 
+#=======
+def obtenerJuntasXCanton():
+    #retorna los numeros de junta de cada canton
+    retorno = []
+    ultimoCanton = ""
+    for i in matrizJrv:
+        if i[1] != ultimoCanton:
+            ultimoCanton = i[1]
+            retorno.append([i[1],[]])
+        else:
+            retorno[-1][1].append(i[4])
+    return retorno
+
+
+def obtenerJuntasIndices():
+    # Obtiene los índices de cambio de cantón en la lista de juntas
+    retorno = []
+    ultimoCanton = ""
+    for k, i in enumerate(matrizJrv):
+        if i[1] != ultimoCanton:
+            ultimoCanton = i[1]
+            retorno.append([i[1],k])
+    return retorno + [["NONE", -1]]
+
+
+def obtenerVotosPorCanton():
+    cantonVotos = []
+    indices = obtenerJuntasIndices()
+    ultimoCanton = 0
+    for j, acta in enumerate(matrizActas):
+        if j == indices[ultimoCanton][1]:
+            cantonVotos.append([indices[ultimoCanton][0],acta[1:-7]])
+            ultimoCanton += 1
+            continue
+        cantonVotos[-1][1] = [int(x)+int(y) for x,y in zip(cantonVotos[-1][1], acta[1:-7])]
+    return cantonVotos
+
+
+def obtenerVotos(canton, lista):
+    for i in lista:
+        if i[0] == canton:
+            return i[1]
+    return []
+
+
+def obtenerVotoPorPartido(canton):
+    # Elije aleatoriamente pero con cierta densidad, el voto de un elector
+    partidos = [
+        "ACCESIBILIDAD SIN EXCLUSION",
+        "ACCION CIUDADANA",
+        "ALIANZA DEMOCRATA CRISTIANA",
+        "DE LOS TRABAJADORES",
+        "FRENTE AMPLIO",
+        "INTEGRACION NACIONAL",
+        "LIBERACION NACIONAL",
+        "MOVIMIENTO LIBERTARIO",
+        "NUEVA GENERACION",
+        "RENOVACION COSTARRICENSE",
+        "REPUBLICANO SOCIAL CRISTIANO",
+        "RESTAURACION NACIONAL",
+        "UNIDAD SOCIAL CRISTIANA"
+    ]
+    # Lista de pesos con los votos del cantón por cada partido 
+    votosDelCanton = obtenerVotos(canton, obtenerVotosPorCanton())
+    # Total de votos del cantón
+    total = sum(int(n) for n in votosDelCanton)
+    # Número aleatorio dentro del total de votos
+    seed = uniform(0, total)
+    indVoto = -1
+    for j, k in enumerate(votosDelCanton):
+        # Sumar los votos y ver si superan el valor aleatorio. 
+        # Una vez que lo superan, se ha alcanzado un step que define el 
+        #  rango en que se determina el voto.
+        if seed <= sum(float(n) for n in votosDelCanton[:j]):
+            indVoto = j
+            break
+    voto = partidos[indVoto-1]
+    return voto
+
+def contarDiferentes(lista):
+    # Cuenta los valores diferentes de una lista y su
+    #  cantidad de ocurrencias
+    retorno = [[],[]]
+    for e in lista:
+        if e in retorno[0]:
+            k = retorno[0].index(e)
+            retorno[1][k] += 1
+        else:
+            retorno[0].append(e)
+            retorno[1].append(1)
+    return retorno
+
+def analisis(muestra):
+    n = len(muestra)
+    
+    partidos = []
+    for v in muestra:
+        partidos.append(v[0])
+    partidosDiferentes = contarDiferentes(partidos)
+    totalPartidos = len(partidos)
+    porcent = [obtienePorcentaje(x,totalPartidos) for x in partidosDiferentes[1]]
+    print("Cantidad de votantes:" + str(len(partidos)))
+    print("Títulos: " + str(partidosDiferentes[0]))
+    print("Porcentajes: " + str(porcent))
+
+    
+#>>>>>>> 075111bb8cb05ba45137e574b794e52f0b29becf
 
 
 # Carga de datos
@@ -406,6 +532,7 @@ leerCsv("../resources/tic.csv", matrizTic)
 # print(obtenerCantonAleatorio())
 # print(obtenerCantonAleatorio("CARTAGO"))
 
+#<<<<<<< HEAD
 #print(datetime.now().time())
 #obtener_muestra_pais(500)
 #print(datetime.now().time())
@@ -426,3 +553,8 @@ for i in range(len(muestra_pais)):
 
 
         
+#=======
+analisis(obtener_muestra_pais(70))
+
+#print(obtenerVotoPorPartido("MORAVIA"))
+#>>>>>>> 075111bb8cb05ba45137e574b794e52f0b29becf
