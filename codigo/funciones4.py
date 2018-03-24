@@ -1,3 +1,4 @@
+from datetime import datetime
 from random import uniform
 import csv
 from random import randint
@@ -15,23 +16,17 @@ matrizPea = []
 matrizPiramide = []
 matrizSeguro = []
 matrizTic = []
+provincias = [
+    "CARTAGO",
+    "SAN JOSE",
+    "ALAJUELA",
+    "PUNTARENAS",
+    "GUANACASTE",
+    "HEREDIA",
+    "LIMON"
+    ]
 
-def normalize_text ( text ):
-    return unicodedata.normalize('NFKD', text).encode('ASCII', 'ignore').upper()
-
-
-def leerCsv(nombreArchivo, nombreMatriz):   
-    archivo = open(nombreArchivo, "rU")
-    lector = csv.reader(archivo, delimiter=",")
-    for fila in lector:
-        filaTmp = []
-        for atributo in fila:
-            atributoTmp = normalize_text(atributo)
-            #print("atr: " + atributo + ", atrNorm: " + str(atributoTmp))
-            filaTmp.append(atributoTmp.decode('UTF-8'))
-        nombreMatriz.append (filaTmp)
-    archivo.close()
-
+# API
 
 def obtener_muestra_pais(n):
     muestra = []
@@ -45,6 +40,22 @@ def obtener_muestra_provincia(n, provincia):
     for i in range(n):
         muestra.append(obtenerVotante(provincia))
     return muestra
+
+
+# Auxiliares
+def normalize_text ( text ):
+    return unicodedata.normalize('NFKD', text).encode('ASCII', 'ignore').upper()
+
+def leerCsv(nombreArchivo, nombreMatriz):   
+    archivo = open(nombreArchivo, "rU")
+    lector = csv.reader(archivo, delimiter=",")
+    for fila in lector:
+        filaTmp = []
+        for atributo in fila:
+            atributoTmp = normalize_text(atributo)
+            filaTmp.append(atributoTmp.decode('UTF-8'))
+        nombreMatriz.append (filaTmp)
+    archivo.close()
 
 
 def obtenerVotante(provincia=""):
@@ -74,9 +85,8 @@ def obtenerVotantesCanton(canton, provincia):
 def esHombre():
     return (uniform(0, 1) * 100) < 49
 
-
+# Indicadores
 def obtenerPromedioDeOcupantes(canton):
-    #print("cant: " + canton + ", cantNorm: " + str(normalize_text(canton)))
     for i in matrizIndicadores:
         if i[0] == canton:
             return i[9]
@@ -84,7 +94,6 @@ def obtenerPromedioDeOcupantes(canton):
 
 
 def obtenerPromedioAlfabetismo(canton, edad):
-    #print("cant: " + canton + ", cantNorm: " + str(normalize_text(canton)))
     for i in matrizIndicadores:
         if i[0] == canton:
             if edad < 25:
@@ -95,7 +104,6 @@ def obtenerPromedioAlfabetismo(canton, edad):
 
 def estaDesempleado(canton, r=-1):
     aleatorio = uniform(0, 1) if r==-1 else r
-    #print("cant: " + canton + ", cantNorm: " + str(normalize_text(canton)))
     for i in matrizIndicadores:
         if i[0] == canton:
             return (aleatorio*100) < float(i[23])
@@ -104,7 +112,6 @@ def estaDesempleado(canton, r=-1):
 
 def estaAsegurado(canton, r=-1):
     aleatorio = uniform(0, 1) if r==-1 else r
-    #print("cant: " + canton + ", cantNorm: " + str(normalize_text(canton)))
     for i in matrizIndicadores:
         if i[0] == canton:
             return (aleatorio*100) < float(i[27])
@@ -160,62 +167,8 @@ def obtenerCantonAleatorio(provincia=""):
     return canton
 
 
-def obtenerCantones(provincia): 
-    # inestable
-    cantones = []
-    for i in matrizJrv:
-        if i[0] == provincia:
-            cant = i[1]
-            if cant == "central":
-                cant = i[0]
-            if cant not in cantones:
-                cantones.append(cant)
-    return cantones
-
-
-provincias = [
-    "CARTAGO",
-    "SAN JOSE",
-    "ALAJUELA",
-    "PUNTARENAS",
-    "GUANACASTE",
-    "HEREDIA",
-    "LIMON"
-    ]
-
-
-
 def obtenerCantonesTodos():
     return sum(list(obtenerCantones(y) for y in provincias), [])
-
-
-leerCsv("../resources/actas.csv", matrizActas)
-leerCsv("../resources/comparativo.csv", matrizComparativo)
-leerCsv("../resources/educacion.csv", matrizEducacion)
-leerCsv("../resources/indicadores.csv", matrizIndicadores)
-leerCsv("../resources/jrv.csv", matrizJrv)
-leerCsv("../resources/ocupado.csv", matrizOcupado)
-leerCsv("../resources/pea.csv", matrizPea)
-leerCsv("../resources/pramide.csv", matrizPiramide)
-leerCsv("../resources/seguro.csv", matrizSeguro)
-leerCsv("../resources/tic.csv", matrizTic)
-
-print(len(obtenerCantonesTodos()))
-
-print("esHombre: "+str(esHombre()))
-print("obtenerVotantesCanton: "+str(obtenerVotantesCanton("ESCAZU", "SAN JOSE")))
-print("obtenerPromedioDeOcupantes: "+str(obtenerPromedioDeOcupantes("MORAVIA")))
-print("obtenerPromedioAlfabetismo: "+str(obtenerPromedioAlfabetismo("MORAVIA", 20)))
-print("estaDesempleado: "+str(estaDesempleado("MORAVIA")))
-print("estaAsegurado: "+str(estaAsegurado("MORAVIA")))
-print("obtenerEdad: "+str(obtenerEdad("MORAVIA", esHombre())))
-
-print(len(obtenerCantonesPoblacion()))
-
-print(obtenerCantonAleatorio())
-print(obtenerCantonAleatorio("CARTAGO"))
-
-print(obtener_muestra_pais(5))
 
 
 def getDensidad(canton):
@@ -297,7 +250,6 @@ def cantidadVotantesSegunProvincia(provincia):
     votantes = 0
     for i in range(len(matrizJrv)):
         if ( len(matrizJrv[i])!=0 and matrizJrv[i][0]==provincia ):
-            #print(matrizJrv[i][0],matrizJrv[i][5])
             votantes = votantes + int(matrizJrv[i][5])
     return votantes
 
@@ -336,19 +288,14 @@ def obtienePorcPoblacionUrbana(canton):
     porcentajePoblacionUrb = ""
     for i in range(len(matrizIndicadores)):
         if (len(matrizIndicadores[i])!= 0 and matrizIndicadores[i][0]==canton and matrizIndicadores[i][1]=="2011"):
-            porcentajePoblacionUrb = matrizIndicadores[i][5]
-    print("El % de poblacion urbana en el canton es " + porcentajePoblacionUrb)            
+            porcentajePoblacionUrb = matrizIndicadores[i][5]        
     return float(porcentajePoblacionUrb)
     
 
 def viveZonaUrbana(canton):
     densidadPoblacionUrbana = obtienePorcPoblacionUrbana(canton)
     random = randint(1,100)
-    print(random)
-    if (random<densidadPoblacionUrbana):
-        return True
-    else:
-        return False
+    return random<densidadPoblacionUrbana
 #funciones #3
 #------obtiene si vive en hacinamiento
 
@@ -356,18 +303,14 @@ def porcentajeHacinamiento(canton):
     porcentajeHacinamiento = ""
     for i in range(len(matrizIndicadores)):
         if (len(matrizIndicadores[i])!= 0 and matrizIndicadores[i][0]==canton and matrizIndicadores[i][1]=="2011"):
-            porcentajeHacinamiento = matrizIndicadores[i][11]
-    print("El % de hacinamiento es " + porcentajeHacinamiento)            
+            porcentajeHacinamiento = matrizIndicadores[i][11]   
     return float(porcentajeHacinamiento)
 
 def viveHacinamiento(canton):
     hacinamientoCanton = porcentajeHacinamiento(canton)
     random = randint(1,100)
-    print(random)
-    if(random<hacinamientoCanton):
-        return True
-    else:
-        return False
+    return random<hacinamientoCanton
+
 #funciones #4   
 #-------- obtiene si esta dentro de la tasa neta de participacion economica
 
@@ -375,18 +318,13 @@ def porcentajeParticipacionNeta(canton):
     porc_neto = ""
     for i in range(len(matrizIndicadores)):
         if (len(matrizIndicadores[i])!= 0 and matrizIndicadores[i][0]==canton and matrizIndicadores[i][1]=="2011"):
-            porc_neto = matrizIndicadores[i][24]
-    print("El % participacion neta es: " + porc_neto)            
+            porc_neto = matrizIndicadores[i][24]        
     return float(porc_neto)
 
 def estaDentroParticipacionEconomica(canton):
     porc_participacionNeta = porcentajeParticipacionNeta(canton)
     random = randint(1,100)
-    print(random)
-    if(random<porc_participacionNeta):
-        return True
-    else:
-        return False
+    return random<porc_participacionNeta
     
     
 #funciones #5
@@ -396,18 +334,13 @@ def porcentajeDiscapacitados(canton):
     porc_discapacitados = ""
     for i in range(len(matrizIndicadores)):
         if (len(matrizIndicadores[i])!= 0 and matrizIndicadores[i][0]==canton and matrizIndicadores[i][1]=="2011"):
-            porc_discapacitados = matrizIndicadores[i][30]
-    print("El % de discapacitados es: " + porc_discapacitados)            
+            porc_discapacitados = matrizIndicadores[i][30]         
     return float(porc_discapacitados)
 
 def esDiscapacitado(canton):
     porc_discapacitados = porcentajeDiscapacitados(canton)
     random = randint(1,100)
-    print(random)
-    if(random<porc_discapacitados):
-        return True
-    else:
-        return False
+    return random<porc_discapacitados
 
 #funciones #5
 #---------obtiene si votante vive en hogar con jefatura compartida
@@ -417,16 +350,41 @@ def porcHogarJefaturaCompartida(canton):
     for i in range(len(matrizIndicadores)):
         if (len(matrizIndicadores[i])!= 0 and matrizIndicadores[i][0]==canton and matrizIndicadores[i][1]=="2011"):
             porc_jefaturaComp = matrizIndicadores[i][32]
-    print("El % de hogar con jefatura compartida es: " + porc_jefaturaComp)            
     return float(porc_jefaturaComp)
 
 def viveHogarJefaturaCompartida(canton):
     porc_jefaturaComp = porcHogarJefaturaCompartida(canton)
     random = randint(1,100)
-    print(random)
-    if(random<porc_jefaturaComp):
-        return True
-    else:
-        return False
+    return random<porc_jefaturaComp
 
 
+# Carga de datos
+leerCsv("../resources/actas.csv", matrizActas)
+leerCsv("../resources/comparativo.csv", matrizComparativo)
+leerCsv("../resources/educacion.csv", matrizEducacion)
+leerCsv("../resources/indicadores.csv", matrizIndicadores)
+leerCsv("../resources/jrv.csv", matrizJrv)
+leerCsv("../resources/ocupado.csv", matrizOcupado)
+leerCsv("../resources/pea.csv", matrizPea)
+leerCsv("../resources/pramide.csv", matrizPiramide)
+leerCsv("../resources/seguro.csv", matrizSeguro)
+leerCsv("../resources/tic.csv", matrizTic)
+
+
+# Ejecución
+
+# print(len(obtenerCantonesTodos()))
+# print("esHombre: "+str(esHombre()))
+# print("obtenerVotantesCanton: "+str(obtenerVotantesCanton("ESCAZU", "SAN JOSE")))
+# print("obtenerPromedioDeOcupantes: "+str(obtenerPromedioDeOcupantes("MORAVIA")))
+# print("obtenerPromedioAlfabetismo: "+str(obtenerPromedioAlfabetismo("MORAVIA", 20)))
+# print("estaDesempleado: "+str(estaDesempleado("MORAVIA")))
+# print("estaAsegurado: "+str(estaAsegurado("MORAVIA")))
+# print("obtenerEdad: "+str(obtenerEdad("MORAVIA", esHombre())))
+# print(len(obtenerCantonesPoblacion()))
+# print(obtenerCantonAleatorio())
+# print(obtenerCantonAleatorio("CARTAGO"))
+
+print(datetime.now().time())
+obtener_muestra_pais(500)
+print(datetime.now().time())
