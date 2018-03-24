@@ -17,10 +17,10 @@ matrizSeguro = []
 matrizTic = []
 
 def normalize_text ( text ):
-return unicodedata.normalize('NFKD', text).encode('ASCII', 'ignore').upper()
+    return unicodedata.normalize('NFKD', text).encode('ASCII', 'ignore').upper()
 
 
-def leercsv(nombreArchivo, nombreMatriz):   
+def leerCsv(nombreArchivo, nombreMatriz):   
     archivo = open(nombreArchivo, "rU")
     lector = csv.reader(archivo, delimiter=",")
     for fila in lector:
@@ -264,7 +264,7 @@ def porcentajeAsistenciaEducacionRegular(canton, edad):
                 return matrizIndicadores[22]
 
 
-def tieneTrabajo(canton, genero, , r=-1):
+def tieneTrabajo(canton, genero, r=-1):
     random = randint(1,100) if r==-1 else r
     for fila in matrizIndicadores:
         cantonCsv = fila[0]
@@ -284,3 +284,5 @@ def esNacidoEnElExtranjero(canton, r=-1):
         if (cantonCsv == canton and annoCsv == "2011" ): 
             nacidoExtranjero = float(fila [28])
             return random<nacidoExtranjero
+
+
