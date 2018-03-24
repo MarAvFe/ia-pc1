@@ -24,9 +24,10 @@ def leerCsv(nombreArchivo, nombreMatriz):
     archivo = open(nombreArchivo, "rU")
     lector = csv.reader(archivo, delimiter=",")
     for fila in lector:
-        filaTmp=[]
+        filaTmp = []
         for atributo in fila:
-            atributoTmp= normalize_text(atributo)
+            atributoTmp = normalize_text(atributo)
+            #print("atr: " + atributo + ", atrNorm: " + str(atributoTmp))
             filaTmp.append(atributoTmp.decode('UTF-8'))
         nombreMatriz.append (filaTmp)
     archivo.close()
@@ -75,6 +76,7 @@ def esHombre():
 
 
 def obtenerPromedioDeOcupantes(canton):
+    #print("cant: " + canton + ", cantNorm: " + str(normalize_text(canton)))
     for i in matrizIndicadores:
         if i[0] == canton:
             return i[9]
@@ -82,6 +84,7 @@ def obtenerPromedioDeOcupantes(canton):
 
 
 def obtenerPromedioAlfabetismo(canton, edad):
+    #print("cant: " + canton + ", cantNorm: " + str(normalize_text(canton)))
     for i in matrizIndicadores:
         if i[0] == canton:
             if edad < 25:
@@ -92,6 +95,7 @@ def obtenerPromedioAlfabetismo(canton, edad):
 
 def estaDesempleado(canton, r=-1):
     aleatorio = uniform(0, 1) if r==-1 else r
+    #print("cant: " + canton + ", cantNorm: " + str(normalize_text(canton)))
     for i in matrizIndicadores:
         if i[0] == canton:
             return (aleatorio*100) < float(i[23])
@@ -100,6 +104,7 @@ def estaDesempleado(canton, r=-1):
 
 def estaAsegurado(canton, r=-1):
     aleatorio = uniform(0, 1) if r==-1 else r
+    #print("cant: " + canton + ", cantNorm: " + str(normalize_text(canton)))
     for i in matrizIndicadores:
         if i[0] == canton:
             return (aleatorio*100) < float(i[27])
@@ -108,7 +113,7 @@ def estaAsegurado(canton, r=-1):
 
 def obtenerEdad(canton, esHombre):  # 6-19
     ages = [20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85]
-    sexo = "Hombres" if esHombre else "Mujeres"
+    sexo = "HOMBRES" if esHombre else "MUJERES"
     for i in matrizPiramide:
         if (i[0] == canton) & (i[1] == sexo):
             rangos = i[6:]
@@ -120,7 +125,7 @@ def obtenerEdad(canton, esHombre):  # 6-19
                     ageIndex = j
                     break
             age = ages[ageIndex]
-            return age
+            return age + int(uniform(0,4))
     return -1
 
 
@@ -132,11 +137,11 @@ def obtenerCantonesPoblacion(provincia=""):
             continue
         if i[1] != ultimoCanton:
             ultimoCanton = i[1]
-            cant = i[1].lower()
+            cant = i[1]
             if cant == "central":
-                cant = i[0].lower()
+                cant = i[0]
             if cant not in cantones:
-                cantones.append([cant.lower(),int(i[-1])])
+                cantones.append([cant,int(i[-1])])
         else:
             cantones[-1][1] += int(i[-1])
     return cantones
@@ -160,11 +165,11 @@ def obtenerCantones(provincia):
     cantones = []
     for i in matrizJrv:
         if i[0] == provincia:
-            cant = i[1].lower()
+            cant = i[1]
             if cant == "central":
-                cant = i[0].lower()
+                cant = i[0]
             if cant not in cantones:
-                cantones.append(cant.lower())
+                cantones.append(cant)
     return cantones
 
 
@@ -197,13 +202,13 @@ leerCsv("../resources/tic.csv", matrizTic)
 
 print(len(obtenerCantonesTodos()))
 
-print(esHombre())
-print(obtenerVotantesCanton("ESCAZU", "SAN JOSE"))
-print(obtenerPromedioDeOcupantes("Moravia"))
-print(obtenerPromedioAlfabetismo("Moravia", 20))
-print(estaDesempleado("Moravia"))
-print(estaAsegurado("Moravia"))
-print(obtenerEdad("Moravia", esHombre()))
+print("esHombre: "+str(esHombre()))
+print("obtenerVotantesCanton: "+str(obtenerVotantesCanton("ESCAZU", "SAN JOSE")))
+print("obtenerPromedioDeOcupantes: "+str(obtenerPromedioDeOcupantes("MORAVIA")))
+print("obtenerPromedioAlfabetismo: "+str(obtenerPromedioAlfabetismo("MORAVIA", 20)))
+print("estaDesempleado: "+str(estaDesempleado("MORAVIA")))
+print("estaAsegurado: "+str(estaAsegurado("MORAVIA")))
+print("obtenerEdad: "+str(obtenerEdad("MORAVIA", esHombre())))
 
 print(len(obtenerCantonesPoblacion()))
 
