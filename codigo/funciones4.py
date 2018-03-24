@@ -298,53 +298,61 @@ def viveHacinamiento(canton, r=-1):
             hacinamientoCanton = matrizIndicadores[i][11]
             if random<float(hacinamientoCanton):
                 return True
+            else:
+                return False
     return False
 
 #funciones #4   
 #-------- obtiene si esta dentro de la tasa neta de participacion economica
 
-def porcentajeParticipacionNeta(canton):
-    porc_neto = ""
-    for i in range(len(matrizIndicadores)):
-        if (len(matrizIndicadores[i])!= 0 and matrizIndicadores[i][0]==canton and matrizIndicadores[i][1]=="2011"):
-            porc_neto = matrizIndicadores[i][24]        
-    return float(porc_neto)
+
 
 def estaDentroParticipacionEconomica(canton, r=-1):
-    porc_participacionNeta = porcentajeParticipacionNeta(canton)
-    random = randint(1,100) if r==-1 else r
-    return random<porc_participacionNeta
+    porc_participacionNeta = ""
+    random = randint(1,100)
+    for i in range(len(matrizIndicadores)):
+        if (len(matrizIndicadores[i])!= 0 and matrizIndicadores[i][0]==canton and matrizIndicadores[i][1]=="2011"):
+            porc_participacionNeta = matrizIndicadores[i][24]  
+            if random<float(porc_participacionNeta):
+                return True
+            else:
+                return False
+    return False
+
     
     
 #funciones #5
 #---------obtiene si votante tiene discapacidad
 
-def porcentajeDiscapacitados(canton):
+    
+def esDiscapacitado(canton, r=-1):
+    random = randint(1,100)
     porc_discapacitados = ""
     for i in range(len(matrizIndicadores)):
         if (len(matrizIndicadores[i])!= 0 and matrizIndicadores[i][0]==canton and matrizIndicadores[i][1]=="2011"):
-            porc_discapacitados = matrizIndicadores[i][30]         
-    return float(porc_discapacitados)
-
-def esDiscapacitado(canton, r=-1):
-    porc_discapacitados = porcentajeDiscapacitados(canton)
-    random = randint(1,100) if r==-1 else r
-    return random<porc_discapacitados
+            porc_discapacitados = matrizIndicadores[i][30]
+            if random<float(porc_discapacitados):
+                return True
+            else:
+                return False
+    return False
+     
 
 #funciones #5
 #---------obtiene si votante vive en hogar con jefatura compartida
 
-def porcHogarJefaturaCompartida(canton):
+
+def viveHogarJefaturaCompartida(canton, r=-1):
     porc_jefaturaComp = ""
+    random = randint(1,100)
     for i in range(len(matrizIndicadores)):
         if (len(matrizIndicadores[i])!= 0 and matrizIndicadores[i][0]==canton and matrizIndicadores[i][1]=="2011"):
             porc_jefaturaComp = matrizIndicadores[i][32]
-    return float(porc_jefaturaComp)
-
-def viveHogarJefaturaCompartida(canton, r=-1):
-    porc_jefaturaComp = porcHogarJefaturaCompartida(canton)
-    random = randint(1,100) if r==-1 else r
-    return random<porc_jefaturaComp
+            if random<float(porc_jefaturaComp):
+                return True
+            else:
+                return False
+    return False
 
 
 #<<<<<<< HEAD
@@ -554,7 +562,7 @@ for i in range(len(muestra_pais)):
 
         
 #=======
-analisis(obtener_muestra_pais(70))
+#analisis(obtener_muestra_pais(70))
 
 #print(obtenerVotoPorPartido("MORAVIA"))
 #>>>>>>> 075111bb8cb05ba45137e574b794e52f0b29becf
