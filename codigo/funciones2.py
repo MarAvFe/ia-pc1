@@ -23,6 +23,33 @@ def leerCsv(nombreArchivo, nombreMatriz):
     archivo.close()
 
 
+def obtener_muestra_pais(n):
+    muestra = []
+    for i in range(n):
+        muestra.append(obtenerVotante())
+    return muestra
+
+
+def obtener_muestra_provincia(n, provincia):
+    muestra = []
+    for i in range(n):
+        muestra.append(obtenerVotante(provincia))
+    return muestra
+
+
+def obtenerVotante(provincia=""):
+    votante = []
+    votante.append(obtenerCantonAleatorio(provincia))
+    votante.append(esHombre())
+    votante.append(obtenerEdad(canton,esHombre))
+    # Todos los indicadores
+    votante.append(obtenerPromedioAlfabetismo(canton))
+    votante.append(obtenerPromedioDeOcupantes(canton))
+    votante.append(estaAsegurado(canton))
+    votante.append(estaDesempleado(canton))
+    return votante
+
+
 def obtenerVotantesCanton(canton, provincia):
     total = 0
     for i in matrizJrv:
@@ -73,7 +100,6 @@ def obtenerEdad(canton, esHombre):  # 6-19
             rangos = i[6:]
             total = sum(float(n) for n in rangos)
             ageSeed = uniform(0, total)
-            print("ageSeed: "+str(ageSeed))
             ageIndex = -1
             for j, k in enumerate(rangos):
                 if ageSeed < sum(float(n) for n in rangos[:j]):
@@ -82,6 +108,37 @@ def obtenerEdad(canton, esHombre):  # 6-19
             age = ages[ageIndex]
             return age
     return -1
+
+
+def obtenerCantonesPoblacion(provincia=""): 
+    cantones = []
+    ultimoCanton = ""
+    for i in matrizJrv:
+        if (provincia != "") & (provincia != i[0]):
+            continue
+        if i[1] != ultimoCanton:
+            ultimoCanton = i[1]
+            cant = i[1].lower()
+            if cant == "central":
+                cant = i[0].lower()
+            if cant not in cantones:
+                cantones.append([cant.lower(),int(i[-1])])
+        else:
+            cantones[-1][1] += int(i[-1])
+    return cantones
+
+
+def obtenerCantonAleatorio(provincia=""): 
+    cantonesPoblacion = obtenerCantonesPoblacion(provincia)
+    total = sum(i[1] for i in cantonesPoblacion)
+    cantonSeed = uniform(0,total)
+    cantonIndex = -1
+    for j, k in enumerate(cantonesPoblacion):
+        if cantonSeed < sum(float(n[1]) for n in cantonesPoblacion[:j]):
+            cantonIndex = j
+            break
+    canton = cantonesPoblacion[cantonIndex][0]
+    return canton
 
 
 def obtenerCantones(provincia): 
@@ -129,7 +186,18 @@ print(esHombre())
 print(obtenerVotantesCanton("ESCAZU", "SAN JOSE"))
 print(obtenerPromedioDeOcupantes("Moravia"))
 print(obtenerPromedioAlfabetismo("Moravia", 20))
-print(obtenerPromedioAlfabetismo("Moravia", 50))
 print(estaDesempleado("Moravia"))
 print(estaAsegurado("Moravia"))
 print(obtenerEdad("Moravia", esHombre()))
+
+print(len(obtenerCantonesPoblacion()))
+
+print(obtenerCantonAleatorio())
+print(obtenerCantonAleatorio("CARTAGO"))
+
+#prueba = []
+#for i in range(5000):
+#    if i % 500 == 0:
+#        print(i)
+#    prueba.append(obtenerCantonAleatorio("SAN JOSE"))
+#print(prueba)
