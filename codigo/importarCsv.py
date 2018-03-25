@@ -6,7 +6,7 @@ matrizIndicadores = []
 
 def leercsv(nombreArchivo, nombreMatriz):	
     archivo = open(nombreArchivo, "rU")
-    lector = csv.reader(archivo, delimiter=",")
+    lector = csv.reader(archivo, delimiter = ",")
     indice = 0	
     for fila in lector:
         nombreMatriz.append (fila)

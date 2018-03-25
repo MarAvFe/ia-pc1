@@ -22,11 +22,11 @@ def test_estaDesempleado_false():
 	assert funcion == False
 
 def test_estaAsegurado():
-	funcion = estaAsegurado("CARTAGO",0)
+	funcion = estaAsegurado("CARTAGO", 0)
 	assert funcion == True
 
 def test_estaAsegurado_falso():
-	funcion = estaAsegurado("CARTAGO",1)
+	funcion = estaAsegurado("CARTAGO", 1)
 	assert funcion == False
 
 def test_esDependiente_cartago_falso():
@@ -50,15 +50,15 @@ def test_esBuenoEstadoDeVivienda_limon_f():
 	assert funcion == False
 
 def test_esBuenoEstadoDeVivienda_limon_verdadero():
-	funcion = esBuenoEstadoDeVivienda("LIMON",5)
+	funcion = esBuenoEstadoDeVivienda("LIMON", 5)
 	assert funcion == True
 
 def test_esBuenoEstadoDeVivienda_guanacaste_verdadero():
-	funcion = esBuenoEstadoDeVivienda("LIBERIA",5)
+	funcion = esBuenoEstadoDeVivienda("LIBERIA", 5)
 	assert funcion == True
 
 def test_annosAprobadosEducacionRegular():
-	funcion = annosAprobadosEducacionRegular("SAN RAMON",55)
+	funcion = annosAprobadosEducacionRegular("SAN RAMON", 55)
 	assert funcion == "6.9"
 
 def test_porcentajeAsistenciaEducacionRegular():
@@ -110,7 +110,7 @@ def test_porcentajeDiscapacitados():
 	assert funcion == 9.3
 
 def test_esDiscapacitado():
-	funcion = esDiscapacitado("TURRIALBA",5)
+	funcion = esDiscapacitado("TURRIALBA", 5)
 	assert funcion == True
 
 def test_porcHogarJefaturaCompartida():
