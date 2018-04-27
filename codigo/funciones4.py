@@ -24,10 +24,13 @@ from random import uniform
 from random import randint
 from random import uniform
 from unicodedata import normalize
+from pprint import pprint
 
 INDICES = []
 VOTXCANTON = []
-matrizActas = []
+VOTXCANTONSEGUNDA = []
+matrizActas1 = []
+matrizActas2 = []
 matrizComparativo = []
 matrizEducacion = []
 matrizIndicadores = []
@@ -119,7 +122,7 @@ def obtenerEdad(canton,esHombre):
             return age + int(uniform(0, 4))
     return -1
 
-def obtenerCantonesPoblacion(provincia=""): 
+def obtenerCantonesPoblacion(provincia=""):
     cantones = []
     ultimoCanton = ""
     for i in matrizJrv:
@@ -136,7 +139,7 @@ def obtenerCantonesPoblacion(provincia=""):
             cantones[-1][1] += int(i[-1])
     return cantones
 
-def obtenerCantonAleatorio(provincia = ""): 
+def obtenerCantonAleatorio(provincia = ""):
     cantonesPoblacion = obtenerCantonesPoblacion(provincia)
     total = sum(i[1] for i in cantonesPoblacion)
     cantonSeed = uniform(0,total)
@@ -156,8 +159,8 @@ def getDensidad(canton):
         cantonCsv = fila[0]
         annoCsv = fila [1]
         densidad = fila [4]
-        if (cantonCsv == canton and annoCsv == "2011" ): 
-            densidad = fila[4] 
+        if (cantonCsv == canton and annoCsv == "2011" ):
+            densidad = fila[4]
             return densidad
 
 def esDependiente(canton, r=-1):
@@ -165,7 +168,7 @@ def esDependiente(canton, r=-1):
     for fila in matrizIndicadores:
         cantonCsv = fila[0]
         annoCsv = fila [1]
-        if (cantonCsv == canton and annoCsv == "2011" ): 
+        if (cantonCsv == canton and annoCsv == "2011" ):
             dependencia = float(fila [7])
             return random > dependencia
 
@@ -174,7 +177,7 @@ def esBuenoEstadoDeVivienda(canton, r=-1):
     for fila in matrizIndicadores:
         cantonCsv = fila[0]
         annoCsv = fila [1]
-        if (cantonCsv == canton and annoCsv == "2011" ): 
+        if (cantonCsv == canton and annoCsv == "2011" ):
             estadoVivienda = float(fila [10])
             return random<estadoVivienda
 
@@ -182,8 +185,8 @@ def annosAprobadosEducacionRegular(canton, edad):
     for fila in matrizIndicadores:
         cantonCsv = fila[0]
         annoCsv = fila [1]
-        if (cantonCsv == canton and annoCsv == "2011" ): 
-            if (edad <=49): 
+        if (cantonCsv == canton and annoCsv == "2011" ):
+            if (edad <=49):
                 return fila[16]
             else:
                 return fila[17]
@@ -192,10 +195,10 @@ def porcentajeAsistenciaEducacionRegular(canton, edad):
     for fila in matrizIndicadores:
         cantonCsv = fila[0]
         annoCsv = fila [1]
-        if (cantonCsv == canton and annoCsv == "2011" ): 
+        if (cantonCsv == canton and annoCsv == "2011" ):
             if (edad<=24):
                 return fila[21]
-            else: 
+            else:
                 return fila[22]
 
 def tieneTrabajo(canton,genero, r=-1):
@@ -203,10 +206,10 @@ def tieneTrabajo(canton,genero, r=-1):
     for fila in matrizIndicadores:
         cantonCsv = fila[0]
         annoCsv = fila [1]
-        if (cantonCsv == canton and annoCsv == "2011" ): 
+        if (cantonCsv == canton and annoCsv == "2011" ):
             if (genero == True):
                 trabaja=  float(fila [25])
-            else: 
+            else:
                 trabaja=  float(fila [26])
             return random < trabaja
 
@@ -215,10 +218,10 @@ def esNacidoEnElExtranjero(canton, r=-1):
     for fila in matrizIndicadores:
         cantonCsv = fila[0]
         annoCsv = fila [1]
-        if (cantonCsv == canton and annoCsv == "2011" ): 
+        if (cantonCsv == canton and annoCsv == "2011" ):
             nacidoExtranjero = float(fila [28])
             return random<nacidoExtranjero
-    
+
 def cantidadVotantesSegunProvincia(provincia):
     votantes = 0
     for i in range(len(matrizJrv)):
@@ -229,7 +232,7 @@ def cantidadVotantesSegunProvincia(provincia):
 
 def obtienePorcentaje(x, total):
     return (x*100)/total
-    
+
 def provinciaSegunVotante():
     random = randint(1,100)
     sanJose =  cantidadVotantesSegunProvincia("SAN JOSE")
@@ -239,7 +242,7 @@ def provinciaSegunVotante():
     guanacaste =  cantidadVotantesSegunProvincia("GUANACASTE")
     puntarenas = cantidadVotantesSegunProvincia("PUNTARENAS")
     limon = cantidadVotantesSegunProvincia("LIMON")
-    costaRica = sanJose + alajuela + cartago + heredia + guanacaste + puntarenas + limon    
+    costaRica = sanJose + alajuela + cartago + heredia + guanacaste + puntarenas + limon
     if(random <= 32):
         return "San Jose"
     elif(random > 32 and random <= 51):
@@ -254,7 +257,7 @@ def provinciaSegunVotante():
         return "Puntarenas"
     elif(random > 89 and random <= 100):
         return "Limon"
-    
+
 def viveZonaUrbana(canton):
     densidadPoblacionUrbana = ""
     for i in range(len(matrizIndicadores)):
@@ -266,7 +269,7 @@ def viveZonaUrbana(canton):
         return True
     else:
         return False
-    
+
 def viveHacinamiento(canton, r=-1):
     hacinamientoCanton = ""
     random = randint(1,100)
@@ -288,13 +291,13 @@ def estaDentroParticipacionEconomica(canton, r=-1):
         if (len(matrizIndicadores[i])!= 0
                 and matrizIndicadores[i][0] == canton
                 and matrizIndicadores[i][1] == "2011"):
-            porc_participacionNeta = matrizIndicadores[i][24]  
+            porc_participacionNeta = matrizIndicadores[i][24]
             if random<float(porc_participacionNeta):
                 return True
             else:
                 return False
     return False
-    
+
 def esDiscapacitado(canton,
                     r=-1):
     random = randint(1, 100)
@@ -309,7 +312,7 @@ def esDiscapacitado(canton,
             else:
                 return False
     return False
- 
+
 def viveHogarJefaturaCompartida(canton,
                                 r=-1):
     porc_jefaturaComp = ""
@@ -344,6 +347,7 @@ def obtenerVotante(provincia=""):
     edad = obtenerEdad(canton, sexo)
     timeNow()
     votante.append(obtenerVotoPorPartido(canton))
+    votante.append(obtenerVotoPorPartidoSegunda(canton))
     votante.append(canton)
     votante.append(sexo)
     votante.append(edad)
@@ -387,6 +391,7 @@ def obtenerVotante(provincia=""):
 
 # API ----------
 def generar_muestra_pais(n):
+    print("COSTA RICA")
     muestra = []
     for i in range(n):
         muestra.append(obtenerVotante())
@@ -425,21 +430,35 @@ def obtenerJuntasIndices():
     INDICES = retorno + [["NONE", -1]]
     return INDICES
 
-def obtenerVotosPorCanton():
-    global VOTXCANTON
-    if VOTXCANTON != []:
-        return VOTXCANTON
+def obtenerVotosPorCanton(primeraRonda=True):
+    if(primeraRonda):
+        global VOTXCANTON
+        if VOTXCANTON != []:
+            return VOTXCANTON
+        totalPartidos = 14 # 1ra ronda
+        matrizActas = matrizActas1
+    else:
+        global VOTXCANTONSEGUNDA
+        if VOTXCANTONSEGUNDA != []:
+            return VOTXCANTONSEGUNDA
+        totalPartidos = 3  # 2da ronda
+        matrizActas = matrizActas2
     cantonVotos = []
     indices = obtenerJuntasIndices()
     ultimoCanton = 0
+
     for j, acta in enumerate(matrizActas):
         if j == indices[ultimoCanton][1]:
-            cantonVotos.append([indices[ultimoCanton][0], (acta[1:14]+acta[15:17])])
+            cantonVotos.append([indices[ultimoCanton][0], (acta[1:totalPartidos]+acta[totalPartidos+1:totalPartidos+3])])
             ultimoCanton += 1
             continue
-        cantonVotos[-1][1] = [int(x)+int(y) for x,y in zip(cantonVotos[-1][1], (acta[1:14]+acta[15:17]))]
-    VOTXCANTON = cantonVotos
-    return VOTXCANTON
+        cantonVotos[-1][1] = [int(x)+int(y) for x,y in zip(cantonVotos[-1][1], (acta[1:totalPartidos]+acta[totalPartidos+1:totalPartidos+3]))]
+    if(primeraRonda):
+        VOTXCANTON = cantonVotos
+        return VOTXCANTON
+    VOTXCANTONSEGUNDA = cantonVotos
+    return VOTXCANTONSEGUNDA
+
 
 def obtenerVotos(canton, lista):
     for i in lista:
@@ -466,7 +485,7 @@ def obtenerVotoPorPartido(canton):
         "NULO",
         "BLANCO"
     ]
-    # Lista de pesos con los votos del cantón por cada partido 
+    # Lista de pesos con los votos del cantón por cada partido
     votosDelCanton = obtenerVotos(canton, obtenerVotosPorCanton())
     # Total de votos del cantón
     total = sum(int(n) for n in votosDelCanton)
@@ -474,8 +493,33 @@ def obtenerVotoPorPartido(canton):
     seed = uniform(0, total)
     indVoto = -1
     for j, k in enumerate(votosDelCanton):
-        # Sumar los votos y ver si superan el valor aleatorio. 
-        # Una vez que lo superan, se ha alcanzado un step que define el 
+        # Sumar los votos y ver si superan el valor aleatorio.
+        # Una vez que lo superan, se ha alcanzado un step que define el
+        #  rango en que se determina el voto.
+        if seed <= sum(float(n) for n in votosDelCanton[:j+1]):
+            indVoto = j
+            break
+    voto = partidos[indVoto]
+    return voto
+
+def obtenerVotoPorPartidoSegunda(canton):
+    # Elije aleatoriamente pero con cierta densidad, el voto de un elector
+    partidos = [
+        "ACCION CIUDADANA",
+        "RESTAURACION NACIONAL",
+        "NULO",
+        "BLANCO"
+    ]
+    # Lista de pesos con los votos del cantón por cada partido
+    votosDelCanton = obtenerVotos(canton, obtenerVotosPorCanton(False))
+    # Total de votos del cantón
+    total = sum(int(n) for n in votosDelCanton)
+    # Número aleatorio dentro del total de votos
+    seed = uniform(0, total)
+    indVoto = -1
+    for j, k in enumerate(votosDelCanton):
+        # Sumar los votos y ver si superan el valor aleatorio.
+        # Una vez que lo superan, se ha alcanzado un step que define el
         #  rango en que se determina el voto.
         if seed <= sum(float(n) for n in votosDelCanton[:j+1]):
             indVoto = j
@@ -500,19 +544,23 @@ def contarDiferentes(lista):
 #----------------------
 def analisis(muestra):
     n = len(muestra)
-    
+
     partidos = []
+    partidosSegunda = []
     cantones = []
     sexos = []
     edades = []
     for v in muestra:
         partidos.append(v[0])
-        cantones.append(v[1])
-        sexos.append(v[2])
-        edades.append(v[3])
-    print("Cantidad de votantes:" + str(len(partidos)))
-    
+        partidosSegunda.append(v[1])
+        cantones.append(v[2])
+        sexos.append(v[3])
+        edades.append(v[4])
+    print("Cantidad de votantes: " + str(len(partidos)))
+
     #partidos
+    # ------------------
+    print("Partidos predominantes 1ra ronda")
     partidosDiferentes = contarDiferentes(partidos)
     totalPartidos = len(partidos)
     porcentPartidos = [obtienePorcentaje(x, totalPartidos) for x in partidosDiferentes[1]]
@@ -520,15 +568,27 @@ def analisis(muestra):
                                                                                partidosDiferentes[0]),
                                                                                key=lambda pair: pair[0])))
     assert len(porcentPartidos) == len(partidosDiferentes[0])
-    print("Partidos predominantes")
     for i in range((len(porcentPartidos)-3), len(porcentPartidos)):
-        print(str(round(porcentPartidos[i], 2)) + "%\t" + str(partidosDiferentes[0][i]))
+        print("  " + str(round(porcentPartidos[i], 2)) + "%\t" + str(partidosDiferentes[0][i]))
+
+    # ------------------
+    print("Resultados 2da ronda")
+    partidosDiferentes2 = contarDiferentes(partidosSegunda)
+    totalPartidos2 = len(partidosSegunda)
+    porcentPartidos2 = [obtienePorcentaje(x, totalPartidos2) for x in partidosDiferentes2[1]]
+    porcentPartidos, partidosDiferentes[0] = (list(x) for x in zip(*sorted(zip(porcentPartidos2,
+                                                                               partidosDiferentes2[0]),
+                                                                               key=lambda pair: pair[0])))
+    assert len(porcentPartidos2) == len(partidosDiferentes2[0])
+    for i in range((len(porcentPartidos2))):
+        print("  " + str(round(porcentPartidos2[i], 2)) + "%\t" + str(partidosDiferentes2[0][i]))
+
 
     #sexos
     totalHombres = sum(1 if (n) else 0 for n in sexos)
     print("Razón de sexos")
-    print(str(round(obtienePorcentaje(totalHombres, n), 2)) + "%\tHombres")
-    print(str(round(obtienePorcentaje(n-totalHombres, n), 2)) + "%\tMujeres")
+    print("  " + str(round(obtienePorcentaje(totalHombres, n), 2)) + "%\tHombres")
+    print("  " + str(round(obtienePorcentaje(n-totalHombres, n), 2)) + "%\tMujeres")
 
     #edades
     print("Promedio de edad: " + str(round(sum(edades)/n)) + " años")
@@ -536,11 +596,12 @@ def analisis(muestra):
 
 
 # Carga de datos
-leerCsv("../resources/actas.csv", matrizActas)
+leerCsv("../resources/actas1.csv", matrizActas1)
+leerCsv("../resources/actas2.csv", matrizActas2)
 leerCsv("../resources/comparativo.csv", matrizComparativo)
 leerCsv("../resources/educacion.csv", matrizEducacion)
 leerCsv("../resources/indicadores.csv", matrizIndicadores)
-leerCsv("../resources/jrv2.csv", matrizJrv)
+leerCsv("../resources/jrv.csv", matrizJrv)
 leerCsv("../resources/ocupado.csv", matrizOcupado)
 leerCsv("../resources/pea.csv", matrizPea)
 leerCsv("../resources/pramide.csv", matrizPiramide)
@@ -553,5 +614,5 @@ leerCsv("../resources/tic.csv", matrizTic)
 ff = map(lambda x: analisis(generar_muestra_provincia(500, x)), provincias)
 set(ff)
 
-muestra_pais = obtener_muestra_pais(1000)
+muestra_pais = generar_muestra_pais(1000)
 analisis(muestra_pais)
