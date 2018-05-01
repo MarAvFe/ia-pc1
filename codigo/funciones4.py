@@ -77,18 +77,13 @@ def esHombre():
 
 
 # Indicadores
-def obtenerPromedioDeOcupantesOld(canton):
-    for i in matrizIndicadores:
-        if i[0] == canton:
-            return i[9]
-    return -1
 
 def obtenerPromedioAlfabetismo(canton, edad):
     for i in matrizIndicadores:
         if i[0] == canton:
             if edad < 25:
-                return i[13]
-            return i[14]
+                return float(i[13])
+            return float(i[14])
     return -1
 
 def estaDesempleado(canton, r=-1):
@@ -161,7 +156,8 @@ def getDensidad(canton):
         densidad = fila [4]
         if (cantonCsv == canton and annoCsv == "2011" ):
             densidad = fila[4]
-            return densidad
+            return int(densidad)
+    return -1
 
 def esDependiente(canton, r=-1):
     random = randint(1, 100) if r==-1 else r
@@ -171,6 +167,7 @@ def esDependiente(canton, r=-1):
         if (cantonCsv == canton and annoCsv == "2011" ):
             dependencia = float(fila [7])
             return random > dependencia
+    return -1
 
 def esBuenoEstadoDeVivienda(canton, r=-1):
     random = randint(1, 100) if r==-1 else r
@@ -180,6 +177,7 @@ def esBuenoEstadoDeVivienda(canton, r=-1):
         if (cantonCsv == canton and annoCsv == "2011" ):
             estadoVivienda = float(fila [10])
             return random<estadoVivienda
+    return -1
 
 def annosAprobadosEducacionRegular(canton, edad):
     for fila in matrizIndicadores:
@@ -187,9 +185,10 @@ def annosAprobadosEducacionRegular(canton, edad):
         annoCsv = fila [1]
         if (cantonCsv == canton and annoCsv == "2011" ):
             if (edad <=49):
-                return fila[16]
+                return float(fila[16])
             else:
-                return fila[17]
+                return float(fila[17])
+    return -1
 
 def porcentajeAsistenciaEducacionRegular(canton, edad):
     for fila in matrizIndicadores:
@@ -197,9 +196,10 @@ def porcentajeAsistenciaEducacionRegular(canton, edad):
         annoCsv = fila [1]
         if (cantonCsv == canton and annoCsv == "2011" ):
             if (edad<=24):
-                return fila[21]
+                return float(fila[21])
             else:
-                return fila[22]
+                return float(fila[22])
+    return -1
 
 def tieneTrabajo(canton,genero, r=-1):
     random = randint(1,100) if r==-1 else r
@@ -212,6 +212,7 @@ def tieneTrabajo(canton,genero, r=-1):
             else:
                 trabaja=  float(fila [26])
             return random < trabaja
+    return -1
 
 def esNacidoEnElExtranjero(canton, r=-1):
     random = randint(1,100) if r == -1 else r
@@ -220,7 +221,8 @@ def esNacidoEnElExtranjero(canton, r=-1):
         annoCsv = fila [1]
         if (cantonCsv == canton and annoCsv == "2011" ):
             nacidoExtranjero = float(fila [28])
-            return random<nacidoExtranjero
+            return random < nacidoExtranjero
+    return -1
 
 def cantidadVotantesSegunProvincia(provincia):
     votantes = 0
@@ -265,7 +267,7 @@ def viveZonaUrbana(canton):
                 and (matrizIndicadores[i][1] == "2011")):
             densidadPoblacionUrbana = matrizIndicadores[i][5]
     random = randint(1,100)
-    if random<float(densidadPoblacionUrbana):
+    if random < float(densidadPoblacionUrbana):
         return True
     else:
         return False
@@ -331,7 +333,7 @@ def viveHogarJefaturaCompartida(canton,
 def obtenerPromedioDeOcupantes(canton):
     for i in matrizIndicadores:
         if i[0] == canton:
-            return i[9]
+            return float(i[9])
     return -1
 
 def timeNow():
@@ -616,3 +618,4 @@ set(ff)
 
 muestra_pais = generar_muestra_pais(1000)
 analisis(muestra_pais)
+print(muestra_pais[-10:-1])
