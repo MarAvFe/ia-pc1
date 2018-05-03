@@ -144,7 +144,7 @@ def obtenerCantonAleatorio(provincia = ""):
             cantonIndex = j
             break
     canton = cantonesPoblacion[cantonIndex][0]
-    return canton
+    return canton, cantonIndex
 
 def obtenerCantonesTodos():
     return sum(list(obtenerCantones(y) for y in provincias), [])
@@ -342,58 +342,44 @@ def timeNow():
 
 def obtenerVotante(provincia=""):
     votante = []
-    canton = obtenerCantonAleatorio(provincia)
+    canton, cantonIdx = obtenerCantonAleatorio(provincia)
     timeNow()
-    sexo = esHombre()
+    sexo = 1 if esHombre() else 0
     timeNow()
     edad = obtenerEdad(canton, sexo)
     timeNow()
     votante.append(obtenerVotoPorPartido(canton))
     votante.append(obtenerVotoPorPartidoSegunda(canton))
-    votante.append(canton)
+    votante.append(cantonIdx)
     votante.append(sexo)
     votante.append(edad)
     # Todos los indicadores
     #Demograficos
-    timeNow()
     votante.append(getDensidad(canton))
     #votante.append(viveZonaUrbana(canton))
-    timeNow()
-    votante.append(esDependiente(canton))
+    votante.append(1 if esDependiente(canton) else 0)
     #vivienda
-    timeNow()
     votante.append(obtenerPromedioDeOcupantes(canton))
-    timeNow()
-    votante.append(esBuenoEstadoDeVivienda(canton))
-    timeNow()
-    votante.append(viveHacinamiento(canton))
+    votante.append(1 if esBuenoEstadoDeVivienda(canton) else 0)
+    votante.append(1 if viveHacinamiento(canton) else 0)
     #Educativos
-    timeNow()
     votante.append(obtenerPromedioAlfabetismo(canton, edad))
-    timeNow()
     votante.append(annosAprobadosEducacionRegular(canton, edad))
-    timeNow()
     votante.append(porcentajeAsistenciaEducacionRegular(canton, edad))
     #Economicos
-    timeNow()
-    votante.append(estaDesempleado(canton))
-    timeNow()
-    votante.append(estaDentroParticipacionEconomica(canton))
-    timeNow()
-    votante.append(estaAsegurado(canton))
+    votante.append(1 if estaDesempleado(canton) else 0)
+    votante.append(1 if estaDentroParticipacionEconomica(canton) else 0)
+    votante.append(1 if estaAsegurado(canton) else 0)
     #Sociales
-    timeNow()
-    votante.append(esNacidoEnElExtranjero(canton))
-    timeNow()
-    votante.append(esDiscapacitado(canton))
-    timeNow()
-    votante.append(viveHogarJefaturaCompartida(canton))
+    votante.append(1 if esNacidoEnElExtranjero(canton) else 0)
+    votante.append(1 if esDiscapacitado(canton) else 0)
+    votante.append(1 if viveHogarJefaturaCompartida(canton) else 0)
     return votante
 
 
 # API ----------
 def generar_muestra_pais(n):
-    print("COSTA RICA")
+    #print("COSTA RICA")
     muestra = []
     for i in range(n):
         muestra.append(obtenerVotante())
@@ -502,7 +488,7 @@ def obtenerVotoPorPartido(canton):
             indVoto = j
             break
     voto = partidos[indVoto]
-    return voto
+    return indVoto
 
 def obtenerVotoPorPartidoSegunda(canton):
     # Elije aleatoriamente pero con cierta densidad, el voto de un elector
@@ -527,7 +513,7 @@ def obtenerVotoPorPartidoSegunda(canton):
             indVoto = j
             break
     voto = partidos[indVoto]
-    return voto
+    return indVoto
 
 def contarDiferentes(lista):
     # Cuenta los valores diferentes de una lista y su
@@ -598,24 +584,24 @@ def analisis(muestra):
 
 
 # Carga de datos
-leerCsv("../resources/actas1.csv", matrizActas1)
-leerCsv("../resources/actas2.csv", matrizActas2)
-leerCsv("../resources/comparativo.csv", matrizComparativo)
-leerCsv("../resources/educacion.csv", matrizEducacion)
-leerCsv("../resources/indicadores.csv", matrizIndicadores)
-leerCsv("../resources/jrv.csv", matrizJrv)
-leerCsv("../resources/ocupado.csv", matrizOcupado)
-leerCsv("../resources/pea.csv", matrizPea)
-leerCsv("../resources/pramide.csv", matrizPiramide)
-leerCsv("../resources/seguro.csv", matrizSeguro)
-leerCsv("../resources/tic.csv", matrizTic)
+leerCsv("/home/marcello/Documents/tec/ia/ia-pc1/resources/actas1.csv", matrizActas1)
+leerCsv("/home/marcello/Documents/tec/ia/ia-pc1/resources/actas2.csv", matrizActas2)
+leerCsv("/home/marcello/Documents/tec/ia/ia-pc1/resources/comparativo.csv", matrizComparativo)
+leerCsv("/home/marcello/Documents/tec/ia/ia-pc1/resources/educacion.csv", matrizEducacion)
+leerCsv("/home/marcello/Documents/tec/ia/ia-pc1/resources/indicadores.csv", matrizIndicadores)
+leerCsv("/home/marcello/Documents/tec/ia/ia-pc1/resources/jrv.csv", matrizJrv)
+leerCsv("/home/marcello/Documents/tec/ia/ia-pc1/resources/ocupado.csv", matrizOcupado)
+leerCsv("/home/marcello/Documents/tec/ia/ia-pc1/resources/pea.csv", matrizPea)
+leerCsv("/home/marcello/Documents/tec/ia/ia-pc1/resources/pramide.csv", matrizPiramide)
+leerCsv("/home/marcello/Documents/tec/ia/ia-pc1/resources/seguro.csv", matrizSeguro)
+leerCsv("/home/marcello/Documents/tec/ia/ia-pc1/resources/tic.csv", matrizTic)
 
 
 # Ejecución
 
-ff = map(lambda x: analisis(generar_muestra_provincia(500, x)), provincias)
-set(ff)
+#ff = map(lambda x: analisis(generar_muestra_provincia(500, x)), provincias)
+#set(ff)
 
-muestra_pais = generar_muestra_pais(1000)
-analisis(muestra_pais)
-print(muestra_pais[-10:-1])
+#muestra_pais = generar_muestra_pais(1000)
+#analisis(muestra_pais)
+#print(muestra_pais[-100:-1])
